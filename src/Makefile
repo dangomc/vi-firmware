@@ -98,7 +98,7 @@ ifneq ($(CJSON_EXISTS),0)
 $(error cJSON dependency is missing - run "script/bootstrap.sh")
 endif
 
-VALID_PLATFORMS = CHIPKIT BLUEBOARD FORDBOARD CROSSCHASM_C5
+VALID_PLATFORMS = CHIPKIT BLUEBOARD FORDBOARD CROSSCHASM_C5 PC
 # Default PLATFORM is FORDBOARD
 PLATFORM ?= FORDBOARD
 
@@ -148,6 +148,8 @@ else ifeq ($(PLATFORM), FORDBOARD)
 include platform/lpc17xx/lpc17xx.mk
 else ifeq ($(PLATFORM), BLUEBOARD)
 include platform/lpc17xx/lpc17xx.mk
+else ifeq ($(PLATFORM), PC)
+include platform/pc/pc.mk
 else
 $(error "$(PLATFORM) is not a valid build platform - choose from $(VALID_PLATFORMS)")
 endif
@@ -169,6 +171,7 @@ define show_options
 	$(call show_vi_config_variable,DEFAULT_OBD2_BUS)
 	$(call show_vi_config_variable,DEFAULT_RECURRING_OBD2_REQUESTS_STATUS)
 	$(call show_separator)
+	
 endef
 
 include tests/tests.mk
@@ -176,8 +179,12 @@ include tests/tests.mk
 .DEFAULT_GOAL = custom_all
 
 custom_all_prefix:
+	$(call show_separator)
 	$(info Compiling with options:)
 	$(call show_options)
+	$(info compiling...)
+	
+
 
 custom_all: custom_all_prefix all
 	@echo -n "$(GREEN)Compiled successfully for $(PLATFORM)"
@@ -187,5 +194,3 @@ custom_all: custom_all_prefix all
 		echo -n " running on bare metal"; \
 	fi
 	@echo ".$(COLOR_RESET)"
-	$(info Compiled with options:)
-	$(call show_options)

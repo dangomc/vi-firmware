@@ -16,6 +16,9 @@
 #include "data_emulator.h"
 #include "config.h"
 #include "commands.h"
+extern "C" {
+   #include "platform/pc/canread-test.h"
+}
 
 namespace uart = openxc::interface::uart;
 namespace network = openxc::interface::network;
@@ -133,6 +136,10 @@ void initializeIO() {
 }
 
 void initializeVehicleInterface() {
+    
+    //PC test
+    start_can_read();
+    
     platform::initialize();
     openxc::util::log::initialize();
     time::initialize();
