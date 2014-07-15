@@ -15,7 +15,7 @@ CC_SYMBOLS +=
 AS = $(GCC_BIN)as
 LD = $(GCC_BIN)g++
 LD_FLAGS = 
-LD_SYS_LIBS = -lstdc++ -lsupc++ -lm -lc -lgcc
+LD_SYS_LIBS = -lstdc++ -lsupc++ -lm -lc -lgcc -lpthread
 
 OBJCOPY = $(GCC_BIN)objcopy
 

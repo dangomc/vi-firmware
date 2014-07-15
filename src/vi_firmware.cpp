@@ -17,7 +17,7 @@
 #include "config.h"
 #include "commands.h"
 extern "C" {
-   #include "platform/pc/canread-test.h"
+   #include "platform/pc/socketCAN.h"
 }
 
 namespace uart = openxc::interface::uart;
@@ -26,7 +26,7 @@ namespace usb = openxc::interface::usb;
 namespace lights = openxc::lights;
 namespace can = openxc::can;
 namespace platform = openxc::platform;
-namespace time = openxc::util::time;
+namespace time_ = openxc::util::time;
 namespace signals = openxc::signals;
 namespace diagnostics = openxc::diagnostics;
 namespace power = openxc::power;
@@ -84,7 +84,7 @@ void checkBusActivity() {
         }
         lights::enable(lights::LIGHT_A, lights::COLORS.blue);
         BUS_WAS_ACTIVE = true;
-    } else if(!busActive && (BUS_WAS_ACTIVE || time::uptimeMs() >
+    } else if(!busActive && (BUS_WAS_ACTIVE || time_::uptimeMs() >
             (unsigned long)openxc::can::CAN_ACTIVE_TIMEOUT_S * 1000)) {
         lights::enable(lights::LIGHT_A, lights::COLORS.red);
         BUS_WAS_ACTIVE = false;
@@ -116,7 +116,7 @@ void receiveCan(Pipeline* pipeline, CanBus* bus) {
     if(!QUEUE_EMPTY(CanMessage, &bus->receiveQueue)) {
         CanMessage message = QUEUE_POP(CanMessage, &bus->receiveQueue);
         decodeCanMessage(pipeline, bus, &message);
-        bus->lastMessageReceived = time::systemTimeMs();
+        bus->lastMessageReceived = time_::systemTimeMs();
 
         ++bus->messagesReceived;
 
@@ -136,19 +136,17 @@ void initializeIO() {
 }
 
 void initializeVehicleInterface() {
-    
-    //PC test
-    start_can_read();
-    
     platform::initialize();
     openxc::util::log::initialize();
-    time::initialize();
+    time_::initialize();
     power::initialize();
     lights::initialize();
     bluetooth::initialize(&getConfiguration()->uart);
 
-    srand(time::systemTimeMs());
+    srand(time_::systemTimeMs());
     initializeAllCan();
+
+    launchSocketCAN();
 
     char descriptor[128];
     config::getFirmwareDescriptor(descriptor, sizeof(descriptor));

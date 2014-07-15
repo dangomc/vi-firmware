@@ -171,7 +171,6 @@ define show_options
 	$(call show_vi_config_variable,DEFAULT_OBD2_BUS)
 	$(call show_vi_config_variable,DEFAULT_RECURRING_OBD2_REQUESTS_STATUS)
 	$(call show_separator)
-	
 endef
 
 include tests/tests.mk
@@ -179,12 +178,8 @@ include tests/tests.mk
 .DEFAULT_GOAL = custom_all
 
 custom_all_prefix:
-	$(call show_separator)
 	$(info Compiling with options:)
 	$(call show_options)
-	$(info compiling...)
-	
-
 
 custom_all: custom_all_prefix all
 	@echo -n "$(GREEN)Compiled successfully for $(PLATFORM)"
@@ -194,3 +189,5 @@ custom_all: custom_all_prefix all
 		echo -n " running on bare metal"; \
 	fi
 	@echo ".$(COLOR_RESET)"
+	$(info Compiled with options:)
+	$(call show_options)
